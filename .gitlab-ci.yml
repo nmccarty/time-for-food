@@ -21,3 +21,10 @@ test:cargo:
   script:
   - rustc --version && cargo --version      # Print version info for debugging
   - cargo test --all --verbose
+  - cargo build --release
+  cache:
+    paths:
+      - target/
+  artifacts:
+    paths:
+      - target/release/time-for-food
