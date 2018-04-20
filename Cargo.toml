@@ -1,5 +1,5 @@
 [package]
-name = "TimeForFood"
+name = "time_for_food"
 version = "0.1.0"
 authors = ["Nathan McCarty <nathan@mccarty.io>"]
 
