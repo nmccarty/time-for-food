@@ -16,6 +16,10 @@ pub enum Food {
 pub struct Unit;
 
 /// Stub type, will be implemented later
+pub struct Step;
+
+/// Stub type, will be implemented later
+pub struct Name;
 
 /// A single ingredient, no prepration food.
 /// The atomic building block of Recipes
