@@ -22,6 +22,14 @@ impl Food {
     pub fn new_from_recipe(food: Recipe) -> Food {
         Food::Recipe(food)
     }
+
+    /// Returns the name of the Food
+    pub fn get_name(&self) -> &Name {
+        match self {
+            &Food::RawFood(ref x) => &x.name,
+            &Food::Recipe(ref x) => &x.name,
+        }
+    }
 }
 
 /// Stub type, will be replaced by its own module later
