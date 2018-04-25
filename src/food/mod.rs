@@ -15,18 +15,32 @@ pub enum Food {
 /// Stub type, will be replaced by its own module later
 pub struct Unit;
 
+/// A fractional ammount combined with a unit.
+///
+/// Will be moved into the Unit modules when created.
+pub struct Amount;
+
 /// Stub type, will be implemented later
 pub struct Step;
 
 /// Stub type, will be implemented later
 pub struct Name;
 
+/// Stub type, will be implemented later
+pub struct Nutrition;
+
 /// A single ingredient, no prepration food.
 /// The atomic building block of Recipes
 ///
 /// A RawFood knows its name, its nutritonal value per serving size, its serving size,
 /// as well as what unit its serving size is in.
-pub struct RawFood;
+pub struct RawFood {
+    /// The name of the food as a wrapped collection of strings
+    name: Name,
+    /// Contains the raw foods serving size as an Amount.
+    /// Repusents both the Unit and the actual value
+    serving_size: Amount,
+}
 
 /// A composite Food, comprised of one or more other foods, as well as a set of
 /// directions for preparing the food.
