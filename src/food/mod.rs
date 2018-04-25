@@ -13,6 +13,17 @@ pub enum Food {
     RawFood(RawFood),
 }
 
+impl Food {
+    /// Converts a RawFood into a Food
+    pub fn new_from_raw_food(food: RawFood) -> Food {
+        Food::RawFood(food)
+    }
+    /// Converts a Recipe into a Food
+    pub fn new_from_recipe(food: Recipe) -> Food {
+        Food::Recipe(food)
+    }
+}
+
 /// Stub type, will be replaced by its own module later
 pub struct Unit;
 
@@ -64,7 +75,7 @@ pub struct Recipe {
     /// may make a fractional number of servings.
     servings: Rational32,
     /// Contains the component foods and ammounts there of
-    foods: Vec<(Food,Amount)>,
+    foods: Vec<(Food, Amount)>,
     /// Contains the steps, in order, required to produce the recipe
     steps: Vec<Step>,
     /// How long the recipe takes to make, in miniutes
