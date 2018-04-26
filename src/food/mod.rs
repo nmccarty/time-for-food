@@ -1,5 +1,6 @@
 /// This module contains dumb data structures describing real-world foods
 use num_rational::*;
+use std::sync::Arc;
 
 /// Describes a specific, real world food
 ///
@@ -8,6 +9,7 @@ use num_rational::*;
 ///
 /// A food can either be a Recipe (composite of multiple foods) or
 /// a RawFood (single ingredient food intended as the atomic building blocks of recipes)
+#[derive(Clone)]
 pub enum Food {
     Recipe(Recipe),
     RawFood(RawFood),
@@ -33,20 +35,25 @@ impl Food {
 }
 
 /// Stub type, will be replaced by its own module later
+#[derive(Clone)]
 pub struct Unit;
 
 /// A fractional ammount combined with a unit.
 ///
 /// Will be moved into the Unit modules when created.
+#[derive(Clone)]
 pub struct Amount;
 
 /// Stub type, will be implemented later
+#[derive(Clone)]
 pub struct Step;
 
 /// Stub type, will be implemented later
+#[derive(Clone)]
 pub struct Name;
 
 /// Stub type, will be implemented later
+#[derive(Clone)]
 pub struct Nutrition;
 
 /// A single ingredient, no prepration food.
@@ -54,6 +61,7 @@ pub struct Nutrition;
 ///
 /// A RawFood knows its name, its nutritonal value per serving size, its serving size,
 /// as well as what unit its serving size is in.
+#[derive(Clone)]
 pub struct RawFood {
     /// The name of the food as a wrapped collection of strings
     name: Name,
@@ -68,6 +76,7 @@ pub struct RawFood {
 /// A recipe knows its name, its components foods, the ammounts required, the steps
 /// required to produce the recipe, the nutritonal value of the resulting food,
 /// how many servings it produces, and how long the recipe takes to make.
+#[derive(Clone)]
 pub struct Recipe {
     /// The name of the Recipe as an encoded String
     ///
