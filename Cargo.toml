@@ -7,3 +7,4 @@ authors = ["Nathan McCarty <nathan@mccarty.io>"]
 num = "0.1"
 num-rational = "0.1"
 fluent = "0.2.0"
+rocket = "0.3"
