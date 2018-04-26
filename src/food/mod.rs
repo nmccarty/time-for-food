@@ -1,6 +1,5 @@
 /// This module contains dumb data structures describing real-world foods
 use num_rational::*;
-use std::sync::Arc;
 
 /// Describes a specific, real world food
 ///
@@ -27,9 +26,17 @@ impl Food {
 
     /// Returns the name of the Food
     pub fn get_name(&self) -> &Name {
-        match self {
-            &Food::RawFood(ref x) => &x.name,
-            &Food::Recipe(ref x) => &x.name,
+        match *self {
+            Food::RawFood(ref x) => &x.name,
+            Food::Recipe(ref x) => &x.name,
+        }
+    }
+
+    /// Returns the nutiritonal value of the food
+    pub fn get_nutrition(&self) -> &Nutrition {
+        match *self {
+            Food::RawFood(ref x) => &x.nutrition,
+            Food::Recipe(ref x) => &x.nutrition,
         }
     }
 }
@@ -68,6 +75,8 @@ pub struct RawFood {
     /// Contains the raw foods serving size as an Amount.
     /// Repusents both the Unit and the actual value
     serving_size: Amount,
+    /// The nutritional value of this food
+    nutrition: Nutrition,
 }
 
 /// A composite Food, comprised of one or more other foods, as well as a set of
@@ -97,4 +106,6 @@ pub struct Recipe {
     steps: Vec<Step>,
     /// How long the recipe takes to make, in miniutes
     time: Rational32,
+    /// Nutritional value of a serving of this Recipe
+    nutrition: Nutrition,
 }
