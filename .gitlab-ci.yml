@@ -16,15 +16,6 @@ image: "rustlang/rust:nightly"
 #- apt-get update -yqq
 #- apt-get install -yqq --no-install-recommends build-essential
 
-# Use cargo to test the project
-test:cargo:
-  script:
-  - rustc --version && cargo --version      # Print version info for debugging
-  - cargo test --all --verbose
-  cache:
-    paths:
-      - target/
-
 # Use cargo to build the project      
 build:cargo:
   stage: build
@@ -37,3 +28,13 @@ build:cargo:
   artifacts:
     paths:
       - target/release/time-for-food
+
+# Use cargo to test the project
+test:cargo:
+  script:
+  - rustc --version && cargo --version      # Print version info for debugging
+  - cargo test --all --verbose
+  cache:
+    paths:
+      - target/
+  
