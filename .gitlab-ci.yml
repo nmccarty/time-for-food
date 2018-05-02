@@ -21,7 +21,16 @@ test:cargo:
   script:
   - rustc --version && cargo --version      # Print version info for debugging
   - cargo test --all --verbose
-  - cargo build --release
+  cache:
+    paths:
+      - target/
+
+# Use cargo to build the project      
+build:cargo:
+  stage: build
+  script:
+    - rustc --version && cargo --version
+    - cargo build --release
   cache:
     paths:
       - target/
