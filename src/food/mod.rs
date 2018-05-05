@@ -1,5 +1,6 @@
 /// This module contains dumb data structures describing real-world foods
 use num_rational::*;
+use serde::*;
 
 /// Describes a specific, real world food
 ///
@@ -8,7 +9,7 @@ use num_rational::*;
 ///
 /// A food can either be a Recipe (composite of multiple foods) or
 /// a RawFood (single ingredient food intended as the atomic building blocks of recipes)
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub enum Food {
     Recipe(Recipe),
     RawFood(RawFood),
@@ -41,26 +42,48 @@ impl Food {
     }
 }
 
+/// Wrapper type, used to provide serde support for Rational32
+#[derive(Clone, Serialize, Deserialize)]
+struct Fraction {
+    numerator: i32,
+    denominator: i32,
+}
+
+impl Fraction {
+    /// Rewraps a Rational32 as a Fraction
+    fn from_rational(ratio: &Rational32) -> Fraction {
+        Fraction {
+            numerator: *ratio.numer(),
+            denominator: *ratio.denom(),
+        }
+    }
+
+    /// Rewraps a Fraction as a Rational32
+    fn to_rational(&self) -> Rational32 {
+        Rational32::new(self.numerator, self.denominator)
+    }
+}
+
 /// Stub type, will be replaced by its own module later
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Unit;
 
 /// A fractional ammount combined with a unit.
 ///
 /// Will be moved into the Unit modules when created.
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Amount;
 
 /// Stub type, will be implemented later
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Step;
 
 /// Stub type, will be implemented later
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Name;
 
 /// Stub type, will be implemented later
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Nutrition;
 
 /// A single ingredient, no prepration food.
@@ -68,7 +91,7 @@ pub struct Nutrition;
 ///
 /// A RawFood knows its name, its nutritonal value per serving size, its serving size,
 /// as well as what unit its serving size is in.
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct RawFood {
     /// The name of the food as a wrapped collection of strings
     name: Name,
@@ -85,7 +108,7 @@ pub struct RawFood {
 /// A recipe knows its name, its components foods, the ammounts required, the steps
 /// required to produce the recipe, the nutritonal value of the resulting food,
 /// how many servings it produces, and how long the recipe takes to make.
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Recipe {
     /// The name of the Recipe as an encoded String
     ///
@@ -99,13 +122,15 @@ pub struct Recipe {
     /// reality and actual reality. While it would be nice to have this as in integer
     /// And force recipes to make a whole number of servings, some recipies, as input,
     /// may make a fractional number of servings.
-    servings: Rational32,
+    servings: Fraction,
     /// Contains the component foods and ammounts there of
     foods: Vec<(Food, Amount)>,
     /// Contains the steps, in order, required to produce the recipe
     steps: Vec<Step>,
     /// How long the recipe takes to make, in miniutes
-    time: Rational32,
+    ///
+    /// Stored as  Fraction rather than directly as a Rational32 to allow serde derive
+    time: Fraction,
     /// Nutritional value of a serving of this Recipe
     nutrition: Nutrition,
 }
