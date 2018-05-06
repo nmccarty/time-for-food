@@ -19,22 +19,29 @@ image: "rust:latest"
 # Use cargo to build the project      
 build:cargo:
   stage: build
+  variables:
+    CARGO_HOME: $CI_PROJECT_DIR/cargo
   script:
     - rustc --version && cargo --version
     - cargo build --release
+    - cd target/release/
   cache:
     paths:
       - target/
+      - cargo/
   artifacts:
     paths:
-      - target/release/time-for-food
+      - time-for-food
 
 # Use cargo to test the project
 test:cargo:
+  variables:
+    CARGO_HOME: $CI_PROJECT_DIR/cargo
   script:
   - rustc --version && cargo --version      # Print version info for debugging
   - cargo test --all --verbose
   cache:
     paths:
       - target/
+      - cargo/
   
