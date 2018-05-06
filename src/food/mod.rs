@@ -134,3 +134,37 @@ pub struct Recipe {
     /// Nutritional value of a serving of this Recipe
     nutrition: Nutrition,
 }
+
+impl Recipe {
+    /// Constructs a new Recipe given the all the member values
+    ///
+    /// Probably not a good idea to use this directly,
+    /// a Recipe Builder is much better idea
+    pub fn new(
+        name: Name,
+        serving_size: Amount,
+        servings: Rational32,
+        foods: Vec<(Food, Amount)>,
+        steps: Vec<Step>,
+        time: Rational32,
+        nutrition: Nutrition,
+    ) -> Recipe {
+        Recipe {
+            name: name,
+            serving_size: serving_size,
+            servings: Fraction::from_rational(&servings),
+            foods: foods,
+            steps: steps,
+            time: Fraction::from_rational(&time),
+            nutrition: nutrition,
+        }
+    }
+}
+
+/// Provides a builder for Recipes
+///
+/// As recipe is a complicated class, this provides a much more ergonomic interface.
+/// Additionally provides automated wrapping of values that require it.
+pub struct RecipeBuilder {
+    
+}
