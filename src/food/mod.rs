@@ -71,7 +71,8 @@ pub struct Unit;
 
 /// A fractional ammount combined with a unit.
 ///
-/// Will be moved into the Unit modules when created.
+/// Internally stored as a fraction, but preseneted as a Rational32.
+/// This is to allow easy serailization/deserializeation.
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Amount;
 
@@ -80,6 +81,30 @@ pub struct Amount;
 /// is also stored for ease of refrence.
 ///
 /// Also stores a default lang code, which is, by default, the empty string
+///
+/// # Valid language codes
+///
+/// This part of the library intentionally does not place any restrictions
+/// on what can or can not be a laguage code. Language codes can be
+/// any valid string, and are compared using literal equality.
+///
+/// # Examples
+///
+/// ```
+/// use time_for_food::food::*;
+/// 
+/// let mut is = IString::new("hello-world");
+/// is.set_default("en_US");
+///
+/// is.set_value_for("en_US", "Hello World!");
+/// is.set_value_for("fr_FR", "Bonjour monde!");
+///
+/// assert_eq!(is.get_short_code(), "hello-world");
+/// assert_eq!(is.get_default(), "en_US");
+/// assert_eq!(is.get_value("en_US"), Some("Hello World!"));
+/// assert_eq!(is.get_value("fr_FR"), Some("Bonjour monde!"));
+/// assert_eq!(is.get_value("en_UK"), None);
+/// ```
 #[derive(Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct IString {
     short_code: String,
@@ -99,13 +124,18 @@ impl IString {
 
     /// Sets the value of the IString for a given lanaguge code,
     /// Creating it if it does not exist.
-    pub fn set_name_for(&mut self, lang: &str, value: &str) {
+    pub fn set_value_for(&mut self, lang: &str, value: &str) {
         self.names.insert(lang.to_string(), value.to_string());
     }
 
     /// Gets the default language for this string
     pub fn get_default(&self) -> &str {
         &*self.default
+    }
+
+    /// Sets the default language for this string
+    pub fn set_default(&mut self, new_default: &str) {
+        self.default = new_default.to_string();
     }
 
     /// Gets the value of the IString for the specified language.
@@ -121,6 +151,11 @@ impl IString {
         } else {
             None
         }
+    }
+
+    /// Returns the shortcode name for this IString
+    pub fn get_short_code(&self) -> &str {
+        &*self.short_code
     }
 }
 
