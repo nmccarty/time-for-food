@@ -220,10 +220,11 @@ pub struct RecipeBuilder {
 impl RecipeBuilder {
     /// Creates a new RecipeBuilder
     ///
-    /// Accepts a name, and assigns default values to all other types
-    pub fn new(name: IString) -> RecipeBuilder {
+    /// Accepts a (short code) name, and a default lanaguage,
+    /// and assigns default values to all other types
+    pub fn new(short_code: &str) -> RecipeBuilder {
         RecipeBuilder {
-            name: name,
+            name: IString::new(short_code),
             serving_size: None,
             servings: None,
             foods: Vec::new(),
