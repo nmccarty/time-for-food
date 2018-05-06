@@ -1,5 +1,3 @@
-#![feature(plugin, decl_macro)]
-#![plugin(rocket_codegen)]
 extern crate num_rational;
 extern crate serde;
 extern crate serde_json;
