@@ -166,5 +166,28 @@ impl Recipe {
 /// As recipe is a complicated class, this provides a much more ergonomic interface.
 /// Additionally provides automated wrapping of values that require it.
 pub struct RecipeBuilder {
-    
+    name: Name,
+    serving_size: Option<Amount>,
+    servings: Option<Rational32>,
+    foods: Vec<(Food, Amount)>,
+    steps: Vec<Step>,
+    time: Option<Rational32>,
+    nutrition: Option<Nutrition>,
+}
+
+impl RecipeBuilder {
+    /// Creates a new RecipeBuilder
+    ///
+    /// Accepts a name, and assigns default values to all other types
+    pub fn new(name: Name) -> RecipeBuilder {
+        RecipeBuilder {
+            name: name,
+            serving_size: None,
+            servings: None,
+            foods: Vec::new(),
+            steps: Vec::new(),
+            time: None,
+            nutrition: None,
+        }
+    }
 }
