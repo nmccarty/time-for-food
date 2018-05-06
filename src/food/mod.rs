@@ -75,10 +75,6 @@ pub struct Unit;
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Amount;
 
-/// Stub type, will be implemented later
-#[derive(Clone, Serialize, Deserialize)]
-pub struct Step;
-
 /// IStrings are stored as a dictonary mapping lang-code to
 /// the acutal name. A shortcode (typically short, english, and hypenated)
 /// is also stored for ease of refrence.
@@ -172,7 +168,7 @@ pub struct Recipe {
     /// Contains the component foods and ammounts there of
     foods: Vec<(Food, Amount)>,
     /// Contains the steps, in order, required to produce the recipe
-    steps: Vec<Step>,
+    steps: Vec<IString>,
     /// How long the recipe takes to make, in miniutes
     ///
     /// Stored as  Fraction rather than directly as a Rational32 to allow serde derive
@@ -191,7 +187,7 @@ impl Recipe {
         serving_size: Amount,
         servings: Rational32,
         foods: Vec<(Food, Amount)>,
-        steps: Vec<Step>,
+        steps: Vec<IString>,
         time: Rational32,
         nutrition: Nutrition,
     ) -> Recipe {
@@ -216,7 +212,7 @@ pub struct RecipeBuilder {
     serving_size: Option<Amount>,
     servings: Option<Rational32>,
     foods: Vec<(Food, Amount)>,
-    steps: Vec<Step>,
+    steps: Vec<IString>,
     time: Option<Rational32>,
     nutrition: Option<Nutrition>,
 }
