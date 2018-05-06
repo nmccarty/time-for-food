@@ -1,6 +1,7 @@
 /// This module contains dumb data structures describing real-world foods
 use num_rational::*;
 use serde::*;
+use std::collections::HashMap;
 
 /// Describes a specific, real world food
 ///
@@ -26,7 +27,7 @@ impl Food {
     }
 
     /// Returns the name of the Food
-    pub fn get_name(&self) -> &Name {
+    pub fn get_name(&self) -> &IString {
         match *self {
             Food::RawFood(ref x) => &x.name,
             Food::Recipe(ref x) => &x.name,
@@ -78,9 +79,54 @@ pub struct Amount;
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Step;
 
-/// Stub type, will be implemented later
-#[derive(Clone, Serialize, Deserialize)]
-pub struct Name;
+/// IStrings are stored as a dictonary mapping lang-code to
+/// the acutal name. A shortcode (typically short, english, and hypenated)
+/// is also stored for ease of refrence.
+///
+/// Also stores a default lang code, which is, by default, the empty string
+#[derive(Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct IString {
+    short_code: String,
+    names: HashMap<String, String>,
+    default: String,
+}
+
+impl IString {
+    /// Constructs a new IString, given a short-code
+    pub fn new(short_code: &str) -> IString {
+        IString {
+            short_code: short_code.to_string(),
+            names: HashMap::new(),
+            default: String::new(),
+        }
+    }
+
+    /// Sets the value of the IString for a given lanaguge code,
+    /// Creating it if it does not exist.
+    pub fn set_name_for(&mut self, lang: &str, value: &str) {
+        self.names.insert(lang.to_string(), value.to_string());
+    }
+
+    /// Gets the default language for this string
+    pub fn get_default(&self) -> &str {
+        &*self.default
+    }
+
+    /// Gets the value of the IString for the specified language.
+    ///
+    /// # Returns
+    /// The function will return None if it is unable to locate the
+    /// desired language, and will otherwise return Some(&str) with
+    /// the requested value
+    pub fn get_value(&self, lang: &str) -> Option<&str> {
+        let lookup = self.names.get(lang);
+        if let Some(value) = lookup {
+            Some(&*value)
+        } else {
+            None
+        }
+    }
+}
 
 /// Stub type, will be implemented later
 #[derive(Clone, Serialize, Deserialize)]
@@ -94,7 +140,7 @@ pub struct Nutrition;
 #[derive(Clone, Serialize, Deserialize)]
 pub struct RawFood {
     /// The name of the food as a wrapped collection of strings
-    name: Name,
+    name: IString,
     /// Contains the raw foods serving size as an Amount.
     /// Repusents both the Unit and the actual value
     serving_size: Amount,
@@ -112,8 +158,8 @@ pub struct RawFood {
 pub struct Recipe {
     /// The name of the Recipe as an encoded String
     ///
-    /// The name wrapper type is used to help with i18n
-    name: Name,
+    /// The IString wrapper type is used to help with i18n
+    name: IString,
     /// Contains the serving size and unit, encoded as an Amount
     serving_size: Amount,
     /// Number of servings the recipe makes.
@@ -141,7 +187,7 @@ impl Recipe {
     /// Probably not a good idea to use this directly,
     /// a Recipe Builder is much better idea
     pub fn new(
-        name: Name,
+        name: IString,
         serving_size: Amount,
         servings: Rational32,
         foods: Vec<(Food, Amount)>,
@@ -166,7 +212,7 @@ impl Recipe {
 /// As recipe is a complicated class, this provides a much more ergonomic interface.
 /// Additionally provides automated wrapping of values that require it.
 pub struct RecipeBuilder {
-    name: Name,
+    name: IString,
     serving_size: Option<Amount>,
     servings: Option<Rational32>,
     foods: Vec<(Food, Amount)>,
@@ -179,7 +225,7 @@ impl RecipeBuilder {
     /// Creates a new RecipeBuilder
     ///
     /// Accepts a name, and assigns default values to all other types
-    pub fn new(name: Name) -> RecipeBuilder {
+    pub fn new(name: IString) -> RecipeBuilder {
         RecipeBuilder {
             name: name,
             serving_size: None,
