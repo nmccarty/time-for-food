@@ -92,7 +92,7 @@ pub struct Amount;
 ///
 /// ```
 /// use time_for_food::food::*;
-/// 
+///
 /// let mut is = IString::new("hello-world");
 /// is.set_default("en_US");
 ///
@@ -156,6 +156,27 @@ impl IString {
     /// Returns the shortcode name for this IString
     pub fn get_short_code(&self) -> &str {
         &*self.short_code
+    }
+}
+
+/// A step in making a recipe
+///
+/// Knows its text (encoded with an IString), and how long it takes to complete
+/// (encoded as a Rational32 describing miniutes)
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Step {
+    text: IString,
+    time: Fraction,
+}
+
+impl Step {
+    /// Makes a new empty step, using a short-code name
+    /// and the time to completion
+    pub fn new(short_code: &str, time: Rational32) -> Step {
+        Step {
+            text: IString::new(short_code),
+            time: Fraction::from_rational(&time),
+        }
     }
 }
 
@@ -268,4 +289,9 @@ impl RecipeBuilder {
             nutrition: None,
         }
     }
+
+    /// Adds a name to the Recipe
+    ///
+    /// Expects a language code and a string
+    pub fn add_name() {}
 }
