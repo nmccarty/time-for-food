@@ -5,6 +5,5 @@ extern crate serde_json;
 
 
 pub mod food;
-fn main() {
-    println!("Hello, world!");
-}
+
+
