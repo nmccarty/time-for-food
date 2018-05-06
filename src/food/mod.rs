@@ -178,6 +178,32 @@ impl Step {
             time: Fraction::from_rational(&time),
         }
     }
+
+    /// Return an immutable refrence to the raw IString for the text
+    pub fn get_text(&self) -> &IString {
+        &self.text
+    }
+
+    /// Returns a mutable refrence to the raw IString
+    ///
+    /// For now, use this to add translations
+    pub fn get_mut_text(&mut self) -> &mut IString {
+        &mut self.text
+    }
+
+    /// Returns the time this step takes
+    ///
+    /// Units are in miniutes
+    pub fn get_time(&self) -> Rational32 {
+        self.time.to_rational()
+    }
+
+    /// Sets the time the step takes
+    ///
+    /// Units are in miniutes
+    pub fn set_time(&mut self, time: Rational32) {
+        self.time = Fraction::from_rational(&time);
+    }
 }
 
 /// Stub type, will be implemented later
