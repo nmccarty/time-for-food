@@ -24,7 +24,7 @@ build:cargo:
   script:
     - rustc --version && cargo --version
     - cargo build --release
-    - cd target/release/
+    - mv target/release/bin ./time-for-food
   cache:
     paths:
       - target/
