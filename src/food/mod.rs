@@ -319,5 +319,16 @@ impl RecipeBuilder {
     /// Adds a name to the Recipe
     ///
     /// Expects a language code and a string
-    pub fn add_name() {}
+    pub fn add_name(&mut self, lang_code: &str, name: &str) -> &mut RecipeBuilder {
+        let name = &mut self.name;
+        name.set_value_for(lang_code, name);
+        self
+    }
+
+    /// Creates a Recipe from the given recipe builder
+    ///
+    /// TODO: This currently does nothing, please help
+    pub fn build_recipe(&self) -> Result<Recipe, &str> {
+        Result::Err("Not implemented yet")
+    }
 }
