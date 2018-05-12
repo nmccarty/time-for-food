@@ -44,7 +44,7 @@ impl Food {
 }
 
 /// Wrapper type, used to provide serde support for Rational32
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Copy, Serialize, Deserialize)]
 struct Fraction {
     numerator: i32,
     denominator: i32,
@@ -73,7 +73,7 @@ pub struct Unit;
 ///
 /// Internally stored as a fraction, but preseneted as a Rational32.
 /// This is to allow easy serailization/deserializeation.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct Amount {
     unit: Unit,
     amount: Fraction,
@@ -419,8 +419,43 @@ impl RecipeBuilder {
 
     /// Creates a Recipe from the given recipe builder
     ///
-    /// TODO: This currently does nothing, please help
+    /// Will fail if any options are unset
     pub fn build_recipe(&self) -> Result<Recipe, &str> {
-        Result::Err("Not implemented yet")
+        let serving_size: Amount;
+        let servings: Rational32;
+        let time: Rational32;
+        let nutrition: Nutrition;
+        // Check to see if any options are unset
+        if let Some(x) = self.serving_size {
+            serving_size = x;
+        } else {
+            return Err("Serving Size not set");
+        }
+        if let Some(x) = self.servings {
+            servings = x;
+        } else {
+            return Err("Servings not set");
+        }
+        if let Some(x) = self.time {
+            time = x;
+        } else {
+            return Err("Time not set");
+        }
+        if let Some(x) = &self.nutrition {
+            nutrition = x.clone();
+        } else {
+            return Err("Nutrition not set");
+        }
+
+        // Clone the other values
+        let name = self.name.clone();
+        let foods = self.foods.clone();
+        let steps = self.steps.clone();
+
+        // Construct the Recipe!
+        let recipe = Recipe::new(name, serving_size, servings, foods, steps, time, nutrition);
+
+        // Return the recipe
+        Ok(recipe)
     }
 }
