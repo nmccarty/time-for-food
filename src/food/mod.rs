@@ -266,6 +266,40 @@ pub struct RawFood {
     nutrition: Nutrition,
 }
 
+impl RawFood {
+    /// Constructs a new RawFood from its components
+    ///
+    /// While its probably not a horrible idea to call this directly,
+    /// Its probably a good idea to use a RawFoodBuilder instead.
+    pub fn new(name: IString, serving_size: Amount, nutrition: Nutrition) -> RawFood {
+        RawFood {
+            name: name,
+            serving_size: serving_size,
+            nutrition: nutrition,
+        }
+    }
+
+    /// Returns the name (as an &IString) of this food
+    pub fn get_name(&self) -> &IString {
+        &self.name
+    }
+
+    /// Returns a mutable refrence to this foods name
+    pub fn get_mut_name(&mut self) -> &mut IString {
+        &mut self.name
+    }
+
+    /// Returns the serving size (as an amount) of this food
+    pub fn get_serving_size(&self) -> Amount {
+        self.serving_size
+    }
+
+    /// Returns the nutritional value of this food
+    pub fn get_nutrition(&self) -> &Nutrition {
+        &self.nutrition
+    }
+}
+
 /// A composite Food, comprised of one or more other foods, as well as a set of
 /// directions for preparing the food.
 ///
