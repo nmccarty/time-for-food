@@ -10,7 +10,7 @@ use std::collections::HashMap;
 ///
 /// A food can either be a Recipe (composite of multiple foods) or
 /// a RawFood (single ingredient food intended as the atomic building blocks of recipes)
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Eq, PartialEq)]
 pub enum Food {
     Recipe(Recipe),
     RawFood(RawFood),
@@ -41,10 +41,15 @@ impl Food {
             Food::Recipe(ref x) => &x.nutrition,
         }
     }
+
+    /// Decomposes a food into a list of ingredients
+    pub fn decompose(&self) -> Vec<Food> {
+        Vec::new()
+    }
 }
 
 /// Wrapper type, used to provide serde support for Rational32
-#[derive(Clone, Copy, Serialize, Deserialize)]
+#[derive(Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 struct Fraction {
     numerator: i32,
     denominator: i32,
@@ -66,14 +71,14 @@ impl Fraction {
 }
 
 /// Stub type, will be replaced by its own module later
-#[derive(Clone, Copy, Serialize, Deserialize)]
+#[derive(Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Unit;
 
 /// A fractional ammount combined with a unit.
 ///
 /// Internally stored as a fraction, but preseneted as a Rational32.
 /// This is to allow easy serailization/deserializeation.
-#[derive(Clone, Copy, Serialize, Deserialize)]
+#[derive(Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Amount {
     unit: Unit,
     amount: Fraction,
@@ -203,7 +208,7 @@ impl IString {
 ///
 /// Knows its text (encoded with an IString), and how long it takes to complete
 /// (encoded as a Rational32 describing miniutes)
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Step {
     text: IString,
     time: Fraction,
@@ -247,7 +252,7 @@ impl Step {
 }
 
 /// Stub type, will be implemented later
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Nutrition;
 
 /// A single ingredient, no prepration food.
@@ -255,7 +260,7 @@ pub struct Nutrition;
 ///
 /// A RawFood knows its name, its nutritonal value per serving size, its serving size,
 /// as well as what unit its serving size is in.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct RawFood {
     /// The name of the food as a wrapped collection of strings
     name: IString,
@@ -300,15 +305,13 @@ impl RawFood {
     }
 }
 
-
-
 /// A composite Food, comprised of one or more other foods, as well as a set of
 /// directions for preparing the food.
 ///
 /// A recipe knows its name, its components foods, the ammounts required, the steps
 /// required to produce the recipe, the nutritonal value of the resulting food,
 /// how many servings it produces, and how long the recipe takes to make.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Recipe {
     /// The name of the Recipe as an encoded String
     ///
