@@ -91,13 +91,28 @@ impl Amount {
     }
 
     /// Returns the unit poriton of the Ammount
-    pub fn get_unit(&self) -> &Unit {
-        &self.unit
+    pub fn get_unit(&self) -> Unit {
+        // Unit is Clone
+        self.unit
     }
 
     /// Sets the unit poriton of the Amount
     pub fn set_unit(&mut self, unit: &Unit) {
         self.unit = *unit;
+    }
+
+    /// Returns the amount portion of the Amount
+    ///
+    /// Automatically unwraps the internal fraction to a Rational32
+    pub fn get_amount(&self) -> Rational32 {
+        self.amount.to_rational()
+    }
+
+    /// Sets the amount portion of the Amount
+    ///
+    /// Automatically rewraps the rational to a fraction
+    pub fn set_amount(&mut self, ratio: &Rational32) {
+        self.amount = Fraction::from_rational(ratio);
     }
 }
 
