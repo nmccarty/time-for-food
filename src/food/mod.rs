@@ -290,7 +290,7 @@ pub struct Recipe {
     /// Contains the component foods and ammounts there of
     foods: Vec<(Food, Amount)>,
     /// Contains the steps, in order, required to produce the recipe
-    steps: Vec<IString>,
+    steps: Vec<Step>,
     /// How long the recipe takes to make, in miniutes
     ///
     /// Stored as  Fraction rather than directly as a Rational32 to allow serde derive
@@ -309,7 +309,7 @@ impl Recipe {
         serving_size: Amount,
         servings: Rational32,
         foods: Vec<(Food, Amount)>,
-        steps: Vec<IString>,
+        steps: Vec<Step>,
         time: Rational32,
         nutrition: Nutrition,
     ) -> Recipe {
@@ -334,7 +334,7 @@ pub struct RecipeBuilder {
     serving_size: Option<Amount>,
     servings: Option<Rational32>,
     foods: Vec<(Food, Amount)>,
-    steps: Vec<IString>,
+    steps: Vec<Step>,
     time: Option<Rational32>,
     nutrition: Option<Nutrition>,
 }
@@ -358,9 +358,62 @@ impl RecipeBuilder {
 
     /// Adds a name to the Recipe
     ///
-    /// Expects a language code and a string
-    pub fn add_name(&mut self, lang_code: &str, name: &str) -> &mut RecipeBuilder {
+    /// Expects a language code and a string.
+    ///
+    /// Will overwrite the exsiting name if given a name that already exists
+    pub fn add_name(&mut self, lang_code: &str, name: &str) -> &mut Self {
         self.name.set_value_for(lang_code, name);
+        self
+    }
+
+    /// Sets a serving size
+    ///
+    /// Takes a size and a unit, and builds an amount. Does not directly take an amount
+    /// to save the consumer the step of constructing one.
+    pub fn set_serving_size(&mut self, unit: &Unit, amount: &Rational32) -> &mut Self {
+        self.serving_size = Some(Amount::new(unit, amount));
+        self
+    }
+
+    /// Sets the number of servings made by the recipe
+    ///
+    /// Accepts a Rational32, and auto wraps it to a fraction as needed.
+    /// Will overwrrite the previous value if one was set.
+    pub fn set_servings(&mut self, servings: Rational32) -> &mut Self {
+        self.servings = Some(servings);
+        self
+    }
+
+    /// Adds an ingredient to the list of ingredients
+    ///
+    /// Accepts the Food, a unit, and an amount
+    pub fn add_food(&mut self, food: Food, unit: Unit, amount: Rational32) -> &mut Self {
+        let new_entry = (food, Amount::new(&unit, &amount));
+        self.foods.push(new_entry);
+        self
+    }
+
+    /// Adds a step to the list of steps
+    ///
+    /// Takes a pre-constructed step object
+    pub fn add_step(&mut self, step: Step) -> &mut Self {
+        self.steps.push(step);
+        self
+    }
+
+    /// Sets the ammount of time that the recipe will take to make
+    ///
+    /// Will overwrite the existing value if one exists
+    pub fn set_time(&mut self, time: Rational32) -> &mut Self {
+        self.time = Some(time);
+        self
+    }
+
+    /// Attaches a nutrition object to this recipe
+    ///
+    /// Will overwrite the existing value if one exists
+    pub fn set_nutrition(&mut self, nutrition: Nutrition) -> &mut Self {
+        self.nutrition = Some(nutrition);
         self
     }
 
