@@ -66,7 +66,7 @@ impl Fraction {
 }
 
 /// Stub type, will be replaced by its own module later
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct Unit;
 
 /// A fractional ammount combined with a unit.
@@ -74,7 +74,32 @@ pub struct Unit;
 /// Internally stored as a fraction, but preseneted as a Rational32.
 /// This is to allow easy serailization/deserializeation.
 #[derive(Clone, Serialize, Deserialize)]
-pub struct Amount;
+pub struct Amount {
+    unit: Unit,
+    amount: Fraction,
+}
+
+impl Amount {
+    /// Creates a new Amount given a unit and an ammount
+    ///
+    /// Automatically reencodes the amount as a fraction
+    pub fn new(unit: &Unit, amount: &Rational32) -> Amount {
+        Amount {
+            unit: *unit,
+            amount: Fraction::from_rational(amount),
+        }
+    }
+
+    /// Returns the unit poriton of the Ammount
+    pub fn get_unit(&self) -> &Unit {
+        &self.unit
+    }
+
+    /// Sets the unit poriton of the Amount
+    pub fn set_unit(&mut self, unit: &Unit) {
+        self.unit = *unit;
+    }
+}
 
 /// IStrings are stored as a dictonary mapping lang-code to
 /// the acutal name. A shortcode (typically short, english, and hypenated)
@@ -320,8 +345,7 @@ impl RecipeBuilder {
     ///
     /// Expects a language code and a string
     pub fn add_name(&mut self, lang_code: &str, name: &str) -> &mut RecipeBuilder {
-        let name = &mut self.name;
-        name.set_value_for(lang_code, name);
+        self.name.set_value_for(lang_code, name);
         self
     }
 
