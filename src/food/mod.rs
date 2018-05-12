@@ -52,7 +52,7 @@ struct Fraction {
 
 impl Fraction {
     /// Rewraps a Rational32 as a Fraction
-    fn from_rational(ratio: &Rational32) -> Fraction {
+    fn from_rational(ratio: Rational32) -> Fraction {
         Fraction {
             numerator: *ratio.numer(),
             denominator: *ratio.denom(),
@@ -83,9 +83,9 @@ impl Amount {
     /// Creates a new Amount given a unit and an ammount
     ///
     /// Automatically reencodes the amount as a fraction
-    pub fn new(unit: &Unit, amount: &Rational32) -> Amount {
+    pub fn new(unit: Unit, amount: Rational32) -> Amount {
         Amount {
-            unit: *unit,
+            unit: unit,
             amount: Fraction::from_rational(amount),
         }
     }
@@ -97,8 +97,8 @@ impl Amount {
     }
 
     /// Sets the unit poriton of the Amount
-    pub fn set_unit(&mut self, unit: &Unit) {
-        self.unit = *unit;
+    pub fn set_unit(&mut self, unit: Unit) {
+        self.unit = unit;
     }
 
     /// Returns the amount portion of the Amount
@@ -111,7 +111,7 @@ impl Amount {
     /// Sets the amount portion of the Amount
     ///
     /// Automatically rewraps the rational to a fraction
-    pub fn set_amount(&mut self, ratio: &Rational32) {
+    pub fn set_amount(&mut self, ratio: Rational32) {
         self.amount = Fraction::from_rational(ratio);
     }
 }
@@ -215,7 +215,7 @@ impl Step {
     pub fn new(short_code: &str, time: Rational32) -> Step {
         Step {
             text: IString::new(short_code),
-            time: Fraction::from_rational(&time),
+            time: Fraction::from_rational(time),
         }
     }
 
@@ -242,7 +242,7 @@ impl Step {
     ///
     /// Units are in miniutes
     pub fn set_time(&mut self, time: Rational32) {
-        self.time = Fraction::from_rational(&time);
+        self.time = Fraction::from_rational(time);
     }
 }
 
@@ -316,10 +316,10 @@ impl Recipe {
         Recipe {
             name: name,
             serving_size: serving_size,
-            servings: Fraction::from_rational(&servings),
+            servings: Fraction::from_rational(servings),
             foods: foods,
             steps: steps,
-            time: Fraction::from_rational(&time),
+            time: Fraction::from_rational(time),
             nutrition: nutrition,
         }
     }
@@ -370,7 +370,7 @@ impl RecipeBuilder {
     ///
     /// Takes a size and a unit, and builds an amount. Does not directly take an amount
     /// to save the consumer the step of constructing one.
-    pub fn set_serving_size(&mut self, unit: &Unit, amount: &Rational32) -> &mut Self {
+    pub fn set_serving_size(&mut self, unit: Unit, amount: Rational32) -> &mut Self {
         self.serving_size = Some(Amount::new(unit, amount));
         self
     }
@@ -388,7 +388,7 @@ impl RecipeBuilder {
     ///
     /// Accepts the Food, a unit, and an amount
     pub fn add_food(&mut self, food: Food, unit: Unit, amount: Rational32) -> &mut Self {
-        let new_entry = (food, Amount::new(&unit, &amount));
+        let new_entry = (food, Amount::new(unit, amount));
         self.foods.push(new_entry);
         self
     }
