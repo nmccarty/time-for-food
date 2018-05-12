@@ -1,6 +1,5 @@
 /// This module contains dumb data structures describing real-world foods
 use num_rational::*;
-use serde::*;
 use std::collections::HashMap;
 
 /// Describes a specific, real world food
