@@ -1,4 +1,5 @@
-/// This module contains dumb data structures describing real-world foods
+//! This module contains dumb data structures describing real-world foods
+pub mod engine;
 use num_rational::*;
 use std::collections::HashMap;
 
@@ -298,6 +299,8 @@ impl RawFood {
         &self.nutrition
     }
 }
+
+
 
 /// A composite Food, comprised of one or more other foods, as well as a set of
 /// directions for preparing the food.
