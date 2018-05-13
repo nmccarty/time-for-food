@@ -1,8 +1,8 @@
 //! This module contains dumb data structures describing real-world foods
 pub mod engine;
+use chrono::Duration;
 use num_rational::*;
 use std::collections::HashMap;
-use chrono::Duration;
 
 /// Describes a specific, real world food
 ///
@@ -56,11 +56,11 @@ impl Food {
     pub fn get_time(&self) -> Rational32 {
         match self {
             Food::RawFood(_) => Rational32::from_integer(0),
-            Food::Recipe(x) => x.get_time()
+            Food::Recipe(x) => x.get_time(),
         }
     }
 
-        /// Time the recipe takes, in seconds
+    /// Time the recipe takes, in seconds
     pub fn get_duration(&self) -> Duration {
         // Get the time it takes to make the recipe, and convert it to seconds
         let time_fraction = self.get_time() * Rational32::from_integer(60);
@@ -69,11 +69,12 @@ impl Food {
 
         Duration::seconds(time_seconds)
     }
-
-
 }
 
 /// Wrapper type, used to provide serde support for Rational32
+///
+/// Upstream actually supports serde 1.0, but only in 0.2, which isn't on crates.io yet
+/// so until then we are stuck with this abomination.
 #[derive(Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 struct Fraction {
     numerator: i32,
