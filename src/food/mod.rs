@@ -2,6 +2,7 @@
 pub mod engine;
 use num_rational::*;
 use std::collections::HashMap;
+use chrono::Duration;
 
 /// Describes a specific, real world food
 ///
@@ -43,9 +44,33 @@ impl Food {
     }
 
     /// Decomposes a food into a list of ingredients
+    ///
+    /// TODO: Implement
     pub fn decompose(&self) -> Vec<Food> {
         Vec::new()
     }
+
+    /// Return the time as fractional miniutes
+    ///
+    /// Always just returns 0 for a RawFood
+    pub fn get_time(&self) -> Rational32 {
+        match self {
+            Food::RawFood(_) => Rational32::from_integer(0),
+            Food::Recipe(x) => x.get_time()
+        }
+    }
+
+        /// Time the recipe takes, in seconds
+    pub fn get_duration(&self) -> Duration {
+        // Get the time it takes to make the recipe, and convert it to seconds
+        let time_fraction = self.get_time() * Rational32::from_integer(60);
+        // We don't care about any fractions of a second left over, so we chop those off with a trunc
+        let time_seconds: i64 = time_fraction.to_integer().into();
+
+        Duration::seconds(time_seconds)
+    }
+
+
 }
 
 /// Wrapper type, used to provide serde support for Rational32
@@ -361,6 +386,11 @@ impl Recipe {
             time: Fraction::from_rational(time),
             nutrition: nutrition,
         }
+    }
+
+    /// Returns the time the recipe takes to make, as a fractional number of miniutes
+    pub fn get_time(&self) -> Rational32 {
+        self.time.to_rational()
     }
 }
 
