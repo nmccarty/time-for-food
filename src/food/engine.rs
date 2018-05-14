@@ -16,11 +16,7 @@ pub struct Block {
 impl Block {
     /// Constructs a new block from its raw components
     pub fn new(start: NaiveTime, end: NaiveTime, food: Option<Food>) -> Block {
-        Block {
-            start,
-            end,
-            food,
-        }
+        Block { start, end, food }
     }
 
     pub fn get_start(&self) -> &NaiveTime {
@@ -58,7 +54,7 @@ impl Block {
     /// food and the amount of time avaible is exactly consumed by the given food.
     ///
     /// Will place the existing food in the second block, if it exists.
-    pub fn split_at_start(&self, food: &Food) -> Result<(Block, Option<Block>), NaiveTime> {
+    pub fn split_at_start(&self, food: &Food) -> SplitBlock {
         // First, calcuate the end time that would result from making this food
         let food_end: NaiveTime;
         if let Some(ref existing_food) = self.food {
@@ -72,7 +68,7 @@ impl Block {
         // Check to see if the food will fit
         if food_end > self.end {
             // Food does not fit, report our failure
-            Err(food_end)
+            SplitBlock::Failure(food_end)
         } else {
             // Capture a copy of the existing food to put into the new second block
             let existing_food = self.food.clone();
@@ -87,12 +83,23 @@ impl Block {
             // is no existing food
             if middle == self.end && existing_food.is_some() {
                 // In this case, we basically just create a copy of the block
-                Ok((Block::new(self.start, self.end, Some(new_food)), None))
+                SplitBlock::Replace(Block::new(self.start, middle, Some(new_food)))
             } else {
                 let first_block = Block::new(self.start, middle, Some(new_food));
                 let second_block = Block::new(middle, self.end, existing_food);
-                Ok((first_block, Some(second_block)))
+                SplitBlock::Split(first_block, second_block)
             }
         }
     }
+}
+
+/// Intermediate data structure used when splitting blocks
+pub enum SplitBlock {
+    /// Indicates that all the avaible time was consumed, and there was no existing food
+    Replace(Block),
+    /// Indicates that the block was split into the two provided blocks
+    Split(Block, Block),
+    /// Block was unable to be split, Includes the end time the block would have to have in order
+    /// to be split
+    Failure(NaiveTime),
 }
