@@ -17,9 +17,9 @@ impl Block {
     /// Constructs a new block from its raw components
     pub fn new(start: NaiveTime, end: NaiveTime, food: Option<Food>) -> Block {
         Block {
-            start: start,
-            end: end,
-            food: food,
+            start,
+            end,
+            food,
         }
     }
 

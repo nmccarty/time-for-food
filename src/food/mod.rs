@@ -116,7 +116,7 @@ impl Amount {
     /// Automatically reencodes the amount as a fraction
     pub fn new(unit: Unit, amount: Rational32) -> Amount {
         Amount {
-            unit: unit,
+            unit,
             amount: Fraction::from_rational(amount),
         }
     }
@@ -304,9 +304,9 @@ impl RawFood {
     /// Its probably a good idea to use a RawFoodBuilder instead.
     pub fn new(name: IString, serving_size: Amount, nutrition: Nutrition) -> RawFood {
         RawFood {
-            name: name,
-            serving_size: serving_size,
-            nutrition: nutrition,
+            name,
+            serving_size,
+            nutrition,
         }
     }
 
@@ -379,13 +379,13 @@ impl Recipe {
         nutrition: Nutrition,
     ) -> Recipe {
         Recipe {
-            name: name,
-            serving_size: serving_size,
+            name,
+            serving_size,
             servings: Fraction::from_rational(servings),
-            foods: foods,
-            steps: steps,
+            foods,
+            steps,
             time: Fraction::from_rational(time),
-            nutrition: nutrition,
+            nutrition,
         }
     }
 
